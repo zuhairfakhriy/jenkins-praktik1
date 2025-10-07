@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker {
+        docker{
             image 'python:3.10'
             args '-u root'
         }
@@ -12,13 +12,11 @@ pipeline {
                 sh 'pip install -r requirements.txt'
             }
         }
-
         stage('Run Tests') {
             steps {
                 sh 'pytest test_app.py'
             }
         }
-
         stage('Deploy') {
             when {
                 anyOf {
@@ -36,27 +34,26 @@ pipeline {
         success {
             script {
                 def payload = [
-                    content: "✅ Build SUCCESS on `${env.BRANCH_NAME}`\n🔗URL: ${env.BUILD_URL}"
+                    content: "✅ Build SUCCESS on ${env.BRANCH_NAME}\nURL: ${env.BUILD_URL}"
                 ]
                 httpRequest(
                     httpMode: 'POST',
                     contentType: 'APPLICATION_JSON',
                     requestBody: groovy.json.JsonOutput.toJson(payload),
-                    url: 'https://discord.com/api/webhooks/1424938849984974951/_uImmwS8YgLPEEQzEtggphicpRbSfHNzZ5zwCyTI5p22CKSMxHOgTUppIqQuiSmiSBOv'
+                    url: 'https://discordapp.com/api/webhooks/1425116646141460481/95evlAXEWwpjW7ZjEh9qXS3fKUz7Aqz6PBffBXymqoNsarY3Bz3q2xVjJZmLWjeDJsVJ'
                 )
             }
         }
-
         failure {
             script {
                 def payload = [
-                    content: "❌ Build FAILED on `${env.BRANCH_NAME}`\n🔗URL: ${env.BUILD_URL}"
+                    content: "❌ Build FAILED on ${env.BRANCH_NAME}\nURL: ${env.BUILD_URL}"
                 ]
                 httpRequest(
                     httpMode: 'POST',
                     contentType: 'APPLICATION_JSON',
                     requestBody: groovy.json.JsonOutput.toJson(payload),
-                    url: 'https://discord.com/api/webhooks/1424938849984974951/_uImmwS8YgLPEEQzEtggphicpRbSfHNzZ5zwCyTI5p22CKSMxHOgTUppIqQuiSmiSBOv'
+                    url: 'https://discordapp.com/api/webhooks/1425116646141460481/95evlAXEWwpjW7ZjEh9qXS3fKUz7Aqz6PBffBXymqoNsarY3Bz3q2xVjJZmLWjeDJsVJ'
                 )
             }
         }
